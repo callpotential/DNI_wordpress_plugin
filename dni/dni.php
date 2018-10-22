@@ -255,7 +255,7 @@
 
 	function get_DNI_data(){
 
-		$getDNIArgs = array('post_type' => 'dni');
+		$getDNIArgs = array('post_type' => 'dni','posts_per_page'=>'-1');
 		$getDNI_query = new WP_Query($getDNIArgs);
 
 		echo "<script type=\"text/javascript\">";
@@ -299,11 +299,43 @@
 			}
 			var utmSource = getParameterByName(\"utm_source\", window.location.href);
 			var utmMedium = getParameterByName(\"utm_medium\", window.location.href);
+			var referralURL = document.referrer;
+			if(referralURL.includes(\"google\")){
+				localStorage.setItem(\"referral-source\",\"google\");
+			}else if(referralURL.includes(\"facebook\")){
+				localStorage.setItem(\"referral-source\",\"facebook\");
+			}else if(referralURL.includes(\"yelp\")){
+				localStorage.setItem(\"referral-source\",\"yelp\");
+			}else if(referralURL === \"\"){
+				localStorage.removeItem(\"referral-source\")
+			}
+			var referralSource = localStorage.getItem(\"referral-source\");
+			if(utmSource === \"\" || utmSource === null){
+				utmSource = referralSource;
+				if(referralSource === \"google\"){
+					utmMedium = \"organic\";
+				} else if(referralSource === \"facebook\"){
+					utmMedium = \"social\";
+				} else if(referralSource === \"yelp\"){
+					utmMedium = \"local\";
+				}
+			}
 			try{
+
+				// check if the incoming traffic is from referral and if data exists in DNI
+				
 				if(utmSource !== null && utmMedium !== null && dniData.dniDictionary.length){ 
+
+					// run the dniDictionary
+
 					for(var i = 0; i < dniData.dniDictionary.length; i++){
 					    if(dniData.dniDictionary[i].utm_source.toLowerCase() === utmSource.toLowerCase() && dniData.dniDictionary[i].utm_medium.toLowerCase() === utmMedium.toLowerCase()){
+
+
+					    	// check if phone number exists regardless for pattern
+
 					        var dniPattern = /(\d{3}[-\.\s]??\d{3}[-\.\s]??\d{4}|\(\d{3}\)\s*\d{3}[-\.\s]??\d{4}|\d{3}[-\.\s]??\d{4})/gm;
+
 					        var match, results=[];
 					        do {
 					            match = dniPattern.exec(document.body.innerHTML);
@@ -311,11 +343,24 @@
 					                results.push(match[1]);
 					            }
 					        } while (match);
+
+					        // if number exists then verify the document.body number with the search number in dictionary 
+
 					        if(results.length){
+
 					        	for(var j = 0; j < results.length; j++){
+
+					        		// unmask the number from document.body and DNI's search number
+
 					        		var numberInContent = results[j].replace(/\D+/g,'');
 					        		var unmaskedSearchNumber = dniData.dniDictionary[i].searchNumber.replace(/\D+/g,'');
+
+					        		// if number matches with search number then replace the number
+
 					        		if(numberInContent === unmaskedSearchNumber){
+
+					        			// unmask DNI replace number and add xxx xxx xxxx masking
+
 					        			var dniReplaceNumber = dniData.dniDictionary[i].replaceNumber.replace(/[^\d]+/g, '').replace(/(\d{3})(\d{3})(\d{4})/, '$1 $2 $3');
 					        			document.body.innerHTML = document.body.innerHTML.split(results[j]).join(dniReplaceNumber);
 					        		}
