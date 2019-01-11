@@ -301,29 +301,27 @@
 			var utmMedium = getParameterByName(\"utm_medium\", window.location.href);
 			var referralURL = document.referrer;
 			if(referralURL.includes(\"google\")){
-				localStorage.setItem(\"referral-source\",\"google\");
+			    createCookie('referral-source','google');
+			    createCookie('utm-medium',utmMedium);
 			}else if(referralURL.includes(\"facebook\")){
-				localStorage.setItem(\"referral-source\",\"facebook\");
+			    createCookie('referral-source','facebook');
 			}else if(referralURL.includes(\"yelp\")){
-				localStorage.setItem(\"referral-source\",\"yelp\");
-			}else if(referralURL === \"\"){
-				localStorage.removeItem(\"referral-source\")
+			    createCookie('referral-source','yelp');
 			}
-			var referralSource = localStorage.getItem(\"referral-source\");
+			var referralSource = getCookie('referral-source');
 			if(utmSource === \"\" || utmSource === null){
-				utmSource = referralSource;
-				if(referralSource === \"google\"){
-					utmMedium = \"organic\";
-				} else if(referralSource === \"facebook\"){
-					utmMedium = \"social\";
-				} else if(referralSource === \"yelp\"){
-					utmMedium = \"local\";
-				}
+			    utmSource = referralSource;
+			    if(referralSource === \"google\"){
+			        utmMedium = getCookie('utm-medium');
+			    } else if(referralSource === \"facebook\"){
+			        utmMedium = \"social\";
+			    } else if(referralSource === \"yelp\"){
+			        utmMedium = \"local\";
+			    }
 			}
 			try{
 
 				// check if the incoming traffic is from referral and if data exists in DNI
-				
 				if(utmSource !== null && utmMedium !== null && dniData.dniDictionary.length){ 
 
 					// run the dniDictionary
@@ -361,7 +359,7 @@
 
 					        			// unmask DNI replace number and add xxx xxx xxxx masking
 
-					        			var dniReplaceNumber = dniData.dniDictionary[i].replaceNumber.replace(/[^\d]+/g, '').replace(/(\d{3})(\d{3})(\d{4})/, '$1 $2 $3');
+					        			var dniReplaceNumber = dniData.dniDictionary[i].replaceNumber.replace(/[^\d]+/g, '').replace(/(\d{3})(\d{3})(\d{4})/, '$1-$2-$3');
 					        			document.body.innerHTML = document.body.innerHTML.split(results[j]).join(dniReplaceNumber);
 					        		}
 					        	}
@@ -371,6 +369,27 @@
 				}
 			} catch(error){
 				console.log(\"An Error occured: \", error);
+			}
+			function getCookie(cookie_name) {
+			    var name = cookie_name + \"=\";
+			    var decodedCookie = decodeURIComponent(document.cookie);
+			    var cookies = decodedCookie.split(';');
+			    for(var i = 0; i < cookies.length; i++) {
+			        var cookie_param = cookies[i];
+			        while (cookie_param.charAt(0) == ' ') {
+			           cookie_param = cookie_param.substring(1);
+			        }
+			        if (cookie_param.indexOf(name) == 0) {
+			            return cookie_param.substring(name.length, cookie_param.length);
+			        }
+			    }
+			    return '';
+			}
+			function createCookie(name,value,minutes=30) { //Default cookie expired time
+			    var date = new Date();
+			    date.setTime(date.getTime()+(minutes * 60 * 1000));
+			    var expires = '; expires='+date.toGMTString();
+			    document.cookie = name+'='+value+expires;
 			}
 		</script>";
 	}
