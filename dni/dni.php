@@ -297,8 +297,14 @@
 			    if (!results[2]) return '';
 			    return decodeURIComponent(results[2].replace(/\+/g, \" \"));
 			}
-			var utmSource = getParameterByName(\"utm_source\", window.location.href);
-			var utmMedium = getParameterByName(\"utm_medium\", window.location.href);
+			var gclid = getParameterByName(\"gclid\", window.location.href);
+			if(gclid) {
+				var utmSource = 'Google';
+				var utmMedium = 'Adwords';
+			} else {
+				var utmSource = getParameterByName(\"utm_source\", window.location.href);
+				var utmMedium = getParameterByName(\"utm_medium\", window.location.href);
+			}
 			var referralURL = document.referrer;
 			if(referralURL.includes(\"google\")){
 			    createCookie('referral-source','google');
