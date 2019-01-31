@@ -3,8 +3,8 @@
 	Plugin Name: Dynamic Number Insertion
 	Plugin URL: https://github.com/codal-sjariwala/dynamic-number-insertion.git
 	description: Dynamic Number Insertion Wordpress Plugin
-	Version: 1.0
-	Author: Sahil Jariwala
+	Version: 1.1
+	Author: Call P{otential & Codal
 	Author URI: https://github.com/codal-sjariwala/
 	License: GPL2
 	*/
