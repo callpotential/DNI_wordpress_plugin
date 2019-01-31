@@ -299,8 +299,8 @@
 			}
 			var gclid = getParameterByName(\"gclid\", window.location.href);
 			if(gclid) {
-				var utmSource = 'Google';
-				var utmMedium = 'Adwords';
+				var utmSource = 'google';
+				var utmMedium = 'adwords';
 			} else {
 				var utmSource = getParameterByName(\"utm_source\", window.location.href);
 				var utmMedium = getParameterByName(\"utm_medium\", window.location.href);
@@ -308,6 +308,10 @@
 			var referralURL = document.referrer;
 			if(referralURL.includes(\"google\")){
 			    createCookie('referral-source','google');
+				if (utmMedium === \"\" || utmMedium === null) {
+					utmMedium = 'organic';
+					createCookie('utm-medium',utmMedium);
+				}
 			    createCookie('utm-medium',utmMedium);
 			}else if(referralURL.includes(\"facebook\")){
 			    createCookie('referral-source','facebook');
@@ -318,7 +322,7 @@
 			if(utmSource === \"\" || utmSource === null){
 			    utmSource = referralSource;
 			    if(referralSource === \"google\"){
-			        utmMedium = getCookie('utm-medium');
+					utmMedium = getCookie('utm-medium');
 			    } else if(referralSource === \"facebook\"){
 			        utmMedium = \"social\";
 			    } else if(referralSource === \"yelp\"){
