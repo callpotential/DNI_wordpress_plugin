@@ -1,12 +1,12 @@
 <?php
 	/*
 	Plugin Name: Dynamic Number Insertion
-	Plugin URL: https://github.com/codal-sjariwala/dynamic-number-insertion.git
+	Plugin URL: https://github.com/callpotential/DNI_wordpress_plugin.git
 	description: Dynamic Number Insertion Wordpress Plugin
 	Version: 1.1
-	Author: Call P{otential & Codal
-	Author URI: https://github.com/codal-sjariwala/
-	License: GPL2
+	Author: CallPotential & Codal
+	Author URI: https://github.com/philback
+	License: MIT
 	*/
 
 	if ( !function_exists( 'add_action' ) ) {
